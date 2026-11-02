@@ -1,0 +1,5 @@
+risk_tier,borrowers,exposure,default_rate_pct
+1. Low,3528,50994600.0,0.51
+2. Medium,6965,104343500.0,3.32
+3. High,3460,55685700.0,23.29
+4. Critical,1047,17108800.0,75.55

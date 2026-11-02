@@ -1,0 +1,343 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Financial Risk Dashboard</title>
+<meta name="description" content="Banking & Insurance Risk Analytics — credit, transaction fraud and insurance claims risk.">
+<style>
+:root{
+  color-scheme:light;
+  --page:#f6f6f3; --surface:#ffffff; --surface-2:#fafaf8;
+  --ink:#0b0b0b; --ink-2:#52514e; --muted:#898781;
+  --grid:#ecebe6; --axis:#c3c2b7; --border:rgba(11,11,11,.09);
+  --accent:#1f3a5f; --s1:#2a78d6; --s2:#eb6834; --s1-soft:#cde2fb;
+  --good:#0ca30c; --warn:#fab219; --serious:#ec835a; --critical:#d03b3b;
+  --chip:#eef3fa;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --page:#0f0f0e; --surface:#1a1a19; --surface-2:#202020;
+    --ink:#f0efec; --ink-2:#c3c2b7; --muted:#898781;
+    --grid:#2c2c2a; --axis:#383835; --border:rgba(255,255,255,.09);
+    --accent:#9cc0ef; --s1:#3987e5; --s2:#d95926; --s1-soft:#184f95; --chip:#1f2a38;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --page:#0f0f0e; --surface:#1a1a19; --surface-2:#202020;
+  --ink:#f0efec; --ink-2:#c3c2b7; --muted:#898781;
+  --grid:#2c2c2a; --axis:#383835; --border:rgba(255,255,255,.09);
+  --accent:#9cc0ef; --s1:#3987e5; --s2:#d95926; --s1-soft:#184f95; --chip:#1f2a38;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--page);color:var(--ink);font:14px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased}
+header{background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:5}
+.bar{max-width:1240px;margin:0 auto;padding:14px 24px 0;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:10px;font-weight:650;font-size:15px;letter-spacing:-.01em}
+.logo{width:26px;height:26px;border-radius:7px;background:var(--accent);display:grid;place-items:center}
+.logo svg{display:block}
+.meta{margin-left:auto;color:var(--muted);font-size:12px;display:flex;gap:12px;align-items:center}
+.theme{border:1px solid var(--border);background:transparent;color:var(--ink-2);border-radius:8px;padding:4px 9px;cursor:pointer;font:inherit;font-size:12px}
+nav{max-width:1240px;margin:0 auto;padding:0 24px;display:flex;gap:4px;overflow-x:auto;scrollbar-width:none}
+nav button{all:unset;cursor:pointer;padding:12px 12px 11px;color:var(--ink-2);font-size:13.5px;border-bottom:2px solid transparent;white-space:nowrap}
+nav button:hover{color:var(--ink)}
+nav button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent);font-weight:600}
+main{max-width:1240px;margin:0 auto;padding:22px 24px 48px}
+.page{display:none}.page.on{display:block}
+.head{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin:0 0 16px;flex-wrap:wrap}
+h1{font-size:20px;margin:0;letter-spacing:-.015em;font-weight:650}
+.sub{color:var(--ink-2);margin:4px 0 0;font-size:13px;max-width:70ch}
+.tag{font-size:11.5px;padding:3px 8px;border-radius:999px;background:var(--chip);color:var(--ink-2);white-space:nowrap}
+.tag.syn{background:rgba(250,178,25,.16)}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-bottom:12px}
+.kpi{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 16px}
+.kpi .l{color:var(--ink-2);font-size:12.5px}
+.kpi .v{font-size:24px;font-weight:650;letter-spacing:-.02em;margin-top:4px}
+.kpi .n{color:var(--muted);font-size:12px;margin-top:2px}
+.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:12px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px 18px;min-width:0}
+.c4{grid-column:span 4}.c5{grid-column:span 5}.c6{grid-column:span 6}.c7{grid-column:span 7}.c8{grid-column:span 8}.c12{grid-column:span 12}
+@media (max-width:900px){.c4,.c5,.c6,.c7,.c8{grid-column:span 12}}
+.card h3{margin:0;font-size:14px;font-weight:620}
+.card .q{color:var(--muted);font-size:12px;margin:2px 0 12px}
+.insight{border-left:3px solid var(--accent);padding:2px 0 2px 12px;margin-top:12px;color:var(--ink-2);font-size:13px}
+.insight b{color:var(--ink)}
+svg text{font-family:inherit}
+.chart{width:100%;position:relative}
+.tip{position:fixed;pointer-events:none;background:var(--ink);color:var(--surface);font-size:12px;padding:6px 9px;border-radius:7px;opacity:0;transition:opacity .08s;z-index:20;white-space:nowrap}
+table{width:100%;border-collapse:collapse;font-size:12.5px;font-variant-numeric:tabular-nums}
+th{text-align:left;color:var(--muted);font-weight:500;padding:6px 8px;border-bottom:1px solid var(--grid);white-space:nowrap}
+td{padding:7px 8px;border-bottom:1px solid var(--grid);white-space:nowrap}
+td.r,th.r{text-align:right}
+.tw{overflow-x:auto}
+.pill{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:550}
+.pill i{width:7px;height:7px;border-radius:50%;display:inline-block}
+.seg{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}
+.segc{border:1px solid var(--border);border-radius:10px;padding:12px 14px;background:var(--surface-2)}
+.segc .t{font-weight:620}.segc .d{font-size:26px;font-weight:650;margin:6px 0 2px;letter-spacing:-.02em}
+.segc dl{display:grid;grid-template-columns:1fr auto;gap:2px 8px;margin:8px 0 0;font-size:12px;color:var(--ink-2)}
+.segc dd{margin:0;text-align:right;color:var(--ink);font-variant-numeric:tabular-nums}
+.stack{display:flex;height:12px;border-radius:6px;overflow:hidden;gap:2px;margin:6px 0 10px}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--ink-2)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{width:10px;height:10px;border-radius:3px;display:inline-block}
+footer{max-width:1240px;margin:0 auto;padding:0 24px 32px;color:var(--muted);font-size:12px}
+@media (max-width:600px){.bar,nav,main,footer{padding-left:16px;padding-right:16px}.meta span{display:none}}
+</style>
+</head>
+<body>
+<header>
+  <div class="bar">
+    <div class="brand"><span class="logo"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 11V7M5.5 11V4M9 11V6M12.5 11V2" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/></svg></span>Financial Risk Dashboard</div>
+    <div class="meta"><span>Banking &amp; Insurance Risk Analytics · data 2020–2025</span><button class="theme" id="theme">Light / Dark</button></div>
+  </div>
+  <nav role="tablist" id="tabs">
+    <button role="tab" data-p="overview" aria-selected="true">Overview</button>
+    <button role="tab" data-p="credit">Loan Default</button>
+    <button role="tab" data-p="segments">Customer Segments</button>
+    <button role="tab" data-p="tx">Transactions &amp; Fraud</button>
+    <button role="tab" data-p="claims">Insurance Claims</button>
+  </nav>
+</header>
+
+<main>
+<!-- ======================= OVERVIEW ======================= -->
+<section class="page on" id="overview">
+  <div class="head"><div><h1>Risk overview</h1><p class="sub">One view of credit, transaction and insurance risk across the bank. Each tab answers one business question.</p></div></div>
+  <div class="kpis" id="k-over"></div>
+  <div class="grid">
+    <div class="card c7"><h3>Borrowers by risk tier</h3><p class="q">Composite score: 60% model PD · 25% delinquency · 15% debt-to-income</p>
+      <div id="tier-stack"></div><div class="tw"><table id="tier-table"></table></div>
+      <p class="insight" id="tier-ins"></p></div>
+    <div class="card c5"><h3>Actual default rate by tier</h3><p class="q">Does the tiering separate good from bad borrowers?</p><div class="chart" id="ch-tier"></div></div>
+    <div class="card c12"><h3>Key findings</h3><p class="q">Answers to the four business questions</p><div class="tw"><table id="findings"></table></div></div>
+  </div>
+</section>
+
+<!-- ======================= CREDIT ======================= -->
+<section class="page" id="credit">
+  <div class="head"><div><h1>Loan default analysis</h1><p class="sub">Which customer groups default most, and what drives it?</p></div><span class="tag syn">Loan book is synthetic, linked to real customers</span></div>
+  <div class="kpis" id="k-credit"></div>
+  <div class="grid">
+    <div class="card c6"><h3>Default rate by occupation</h3><p class="q">Q: Which customer group has the highest loan default?</p><div class="chart" id="ch-job"></div><p class="insight" id="job-ins"></p></div>
+    <div class="card c6"><h3>Default rate by credit score</h3><p class="q">Clear step-down as credit score improves</p><div class="chart" id="ch-credit"></div></div>
+    <div class="card c4"><h3>By loan purpose</h3><p class="q">&nbsp;</p><div class="chart" id="ch-purpose"></div></div>
+    <div class="card c4"><h3>By debt-to-income</h3><p class="q">&nbsp;</p><div class="chart" id="ch-dti"></div></div>
+    <div class="card c4"><h3>By age band</h3><p class="q">&nbsp;</p><div class="chart" id="ch-age"></div></div>
+    <div class="card c6"><h3>What drives default</h3><p class="q" id="pd-q"></p><div class="chart" id="ch-drivers"></div><div class="legend"><span><i style="background:var(--s2)"></i>Raises risk</span><span><i style="background:var(--s1)"></i>Lowers risk</span></div></div>
+    <div class="card c6"><h3>Payment behaviour vs default</h3><p class="q">Late-payment history is the strongest early warning</p><div class="chart" id="ch-pay"></div></div>
+  </div>
+</section>
+
+<!-- ======================= SEGMENTS ======================= -->
+<section class="page" id="segments">
+  <div class="head"><div><h1>Customer risk segmentation</h1><p class="sub">K-Means clustering on credit score, DTI, income, loan size and late payments. Q: Which customer segment is most risky?</p></div><span class="tag syn">Borrower data synthetic</span></div>
+  <div class="seg" id="seg-cards"></div>
+  <div class="grid" style="margin-top:12px">
+    <div class="card c6"><h3>Default rate by segment</h3><p class="q">&nbsp;</p><div class="chart" id="ch-seg"></div></div>
+    <div class="card c6"><h3>Unknown credit history, by occupation</h3><p class="q">Real customer base (41,176) — share whose credit-default status is "unknown"</p><div class="chart" id="ch-unknown"></div></div>
+    <div class="card c12"><h3>Critical-tier borrowers — top 12 by risk score</h3><p class="q">Collections / early-intervention watch-list</p><div class="tw"><table id="tb-borrowers"></table></div></div>
+  </div>
+</section>
+
+<!-- ======================= TRANSACTIONS ======================= -->
+<section class="page" id="tx">
+  <div class="head"><div><h1>Transaction anomalies &amp; fraud indicators</h1><p class="sub">Rule-based red flags plus an Isolation Forest model. Q: Which transactions are abnormal?</p></div><span class="tag">Real data · 50,000 transactions</span></div>
+  <div class="kpis" id="k-tx"></div>
+  <div class="grid">
+    <div class="card c8"><h3>Transactions per quarter</h3><p class="q">Volume stays flat; suspicious share is steady at ~4%</p><div class="chart" id="ch-txq"></div></div>
+    <div class="card c4"><h3>Alert levels</h3><p class="q">How the 50,000 transactions were triaged</p><div class="chart" id="ch-alert"></div></div>
+    <div class="card c7"><h3>Fraud indicators triggered</h3><p class="q">Number of transactions hitting each red-flag rule</p><div class="chart" id="ch-ind"></div></div>
+    <div class="card c5"><h3>Suspicious rate by channel</h3><p class="q">&nbsp;</p><div class="chart" id="ch-chan"></div><h3 style="margin-top:18px">By transaction type</h3><div class="chart" id="ch-type" style="margin-top:8px"></div></div>
+    <div class="card c12"><h3>High-priority alerts</h3><p class="q">Highest-scoring alert per account — top 12 for the fraud operations queue</p><div class="tw"><table id="tb-alerts"></table></div></div>
+  </div>
+</section>
+
+<!-- ======================= CLAIMS ======================= -->
+<section class="page" id="claims">
+  <div class="head"><div><h1>Insurance claims analysis</h1><p class="sub">Q: Which claim patterns are abnormal? Red flags used by Special Investigation Units.</p></div><span class="tag syn">Claims data synthetic</span></div>
+  <div class="kpis" id="k-claims"></div>
+  <div class="grid">
+    <div class="card c6"><h3>Fraud rate rises with every red flag</h3><p class="q">Confirmed fraud rate by number of red flags on a claim</p><div class="chart" id="ch-curve"></div><p class="insight" id="curve-ins"></p></div>
+    <div class="card c6"><h3>Red-flag lift</h3><p class="q">Fraud rate when flag present ÷ average fraud rate</p><div class="chart" id="ch-lift"></div></div>
+    <div class="card c12"><h3>Claims by policy type</h3><p class="q">&nbsp;</p><div class="tw"><table id="tb-ptype"></table></div></div>
+  </div>
+</section>
+</main>
+<footer>Built by Salma Akter · Python (pandas, scikit-learn) · SQL · Excel · Transactions: Kaggle bank transactions dataset · Customers: UCI Bank Marketing · Loans &amp; claims: synthetic, generated with documented rules.</footer>
+<div class="tip" id="tip"></div>
+
+<script>
+const D = {"kpis": {"loans": 15000, "loan_book": 228132600.0, "default_rate": 0.12306666666666667, "defaulted_amount": 27465900.0, "pd_auc": 0.714, "transactions": 50000, "tx_volume": 14893610.690000001, "accounts": 495, "suspicious_tx": 2071, "high_alerts": 397, "claims": 9000, "claims_paid": 63107059.989999995, "claim_fraud_rate": 0.064, "claims_for_review": 570, "customers": 41176, "critical_borrowers": 972, "critical_exposure": 15243200.0}, "default_by": {"grade": [{"grade": "E", "count": 1585, "events": 486, "rate": 0.3066}, {"grade": "D", "count": 3075, "events": 554, "rate": 0.1802}, {"grade": "C", "count": 4487, "events": 485, "rate": 0.1081}, {"grade": "B", "count": 3658, "events": 232, "rate": 0.0634}, {"grade": "A", "count": 2195, "events": 89, "rate": 0.0405}], "purpose": [{"purpose": "Medical", "count": 906, "events": 145, "rate": 0.16}, {"purpose": "Small Business", "count": 900, "events": 143, "rate": 0.1589}, {"purpose": "Education", "count": 1016, "events": 130, "rate": 0.128}, {"purpose": "Personal", "count": 2435, "events": 306, "rate": 0.1257}, {"purpose": "Debt Consolidation", "count": 4934, "events": 576, "rate": 0.1167}, {"purpose": "Home Improvement", "count": 2183, "events": 254, "rate": 0.1164}, {"purpose": "Auto", "count": 2626, "events": 292, "rate": 0.1112}], "job": [{"job": "unemployed", "count": 382, "events": 123, "rate": 0.322}, {"job": "student", "count": 295, "events": 76, "rate": 0.2576}, {"job": "entrepreneur", "count": 504, "events": 71, "rate": 0.1409}, {"job": "services", "count": 1478, "events": 201, "rate": 0.136}, {"job": "housemaid", "count": 379, "events": 50, "rate": 0.1319}, {"job": "unknown", "count": 116, "events": 15, "rate": 0.1293}, {"job": "blue-collar", "count": 3371, "events": 422, "rate": 0.1252}, {"job": "retired", "count": 610, "events": 71, "rate": 0.1164}, {"job": "self-employed", "count": 535, "events": 62, "rate": 0.1159}, {"job": "admin", "count": 3806, "events": 417, "rate": 0.1096}, {"job": "technician", "count": 2444, "events": 249, "rate": 0.1019}, {"job": "management", "count": 1080, "events": 89, "rate": 0.0824}], "age_band": [{"age_band": "18-25", "count": 562, "events": 95, "rate": 0.169}, {"age_band": "36-50", "count": 6494, "events": 822, "rate": 0.1266}, {"age_band": "51-65", "count": 2283, "events": 271, "rate": 0.1187}, {"age_band": "26-35", "count": 5423, "events": 632, "rate": 0.1165}, {"age_band": "65+", "count": 235, "events": 25, "rate": 0.1064}], "credit_band": [{"credit_band": "<580", "count": 887, "events": 314, "rate": 0.354}, {"credit_band": "580-619", "count": 1665, "events": 366, "rate": 0.2198}, {"credit_band": "620-659", "count": 2901, "events": 461, "rate": 0.1589}, {"credit_band": "660-699", "count": 3694, "events": 384, "rate": 0.104}, {"credit_band": "700-739", "count": 3091, "events": 202, "rate": 0.0654}, {"credit_band": "740+", "count": 2762, "events": 119, "rate": 0.0431}], "dti_band": [{"dti_band": "35+", "count": 1327, "events": 257, "rate": 0.1937}, {"dti_band": "30-35", "count": 2523, "events": 360, "rate": 0.1427}, {"dti_band": "25-30", "count": 3533, "events": 468, "rate": 0.1325}, {"dti_band": "20-25", "count": 3579, "events": 408, "rate": 0.114}, {"dti_band": "15-20", "count": 2612, "events": 247, "rate": 0.0946}, {"dti_band": "<15", "count": 1426, "events": 106, "rate": 0.0743}], "income_band": [{"income_band": "<30K", "count": 2163, "events": 390, "rate": 0.1803}, {"income_band": "30-50K", "count": 5148, "events": 624, "rate": 0.1212}, {"income_band": "75-100K", "count": 1900, "events": 216, "rate": 0.1137}, {"income_band": "50-75K", "count": 4474, "events": 477, "rate": 0.1066}, {"income_band": "100K+", "count": 1315, "events": 139, "rate": 0.1057}], "term_months": [{"term_months": 60, "count": 4764, "events": 675, "rate": 0.1417}, {"term_months": 36, "count": 10236, "events": 1171, "rate": 0.1144}], "education": [{"education": "Illiterate", "count": 10, "events": 2, "rate": 0.2}, {"education": "Basic 4Y", "count": 1532, "events": 218, "rate": 0.1423}, {"education": "High School", "count": 3489, "events": 459, "rate": 0.1316}, {"education": "Basic 6Y", "count": 805, "events": 104, "rate": 0.1292}, {"education": "Basic 9Y", "count": 2179, "events": 267, "rate": 0.1225}, {"education": "Unknown", "count": 602, "events": 70, "rate": 0.1163}, {"education": "Professional Course", "count": 1923, "events": 220, "rate": 0.1144}, {"education": "University Degree", "count": 4460, "events": 506, "rate": 0.1135}], "marital": [{"marital": "unknown", "count": 24, "events": 3, "rate": 0.125}, {"marital": "married", "count": 9090, "events": 1125, "rate": 0.1238}, {"marital": "divorced", "count": 1636, "events": 201, "rate": 0.1229}, {"marital": "single", "count": 4250, "events": 517, "rate": 0.1216}]}, "segments": [{"segment": "Steady Prime", "customers": 5631, "avg_credit": 709.1055, "avg_dti": 18.9905, "avg_income": 49035.9794, "avg_loan": 9833.7595, "avg_late": 0.391, "default_rate": 0.0389}, {"segment": "Stretched Mid-Market", "customers": 5215, "avg_credit": 659.0982, "avg_dti": 30.023, "avg_income": 46471.8696, "avg_loan": 13699.0796, "avg_late": 0.3262, "default_rate": 0.0692}, {"segment": "Affluent Prime", "customers": 2408, "avg_credit": 690.9369, "avg_dti": 26.7608, "avg_income": 107181.9767, "avg_loan": 32681.1462, "avg_late": 0.4958, "default_rate": 0.0801}, {"segment": "Stressed Borrowers", "customers": 1746, "avg_credit": 651.2417, "avg_dti": 26.4698, "avg_income": 48756.1283, "avg_loan": 12956.3574, "avg_late": 2.7847, "default_rate": 0.6145}], "tiers": [{"risk_tier": "Low", "borrowers": 6521, "exposure": 95753900.0, "avg_score": 20.212, "default_rate": 0.034, "avg_credit": 730.725, "exposure_share": 0.4197}, {"risk_tier": "Medium", "borrowers": 4471, "exposure": 68845600.0, "avg_score": 44.878, "default_rate": 0.101, "avg_credit": 669.679, "exposure_share": 0.3018}, {"risk_tier": "High", "borrowers": 3036, "exposure": 48289900.0, "avg_score": 62.072, "default_rate": 0.19, "avg_credit": 625.074, "exposure_share": 0.2117}, {"risk_tier": "Critical", "borrowers": 972, "exposure": 15243200.0, "avg_score": 75.343, "default_rate": 0.611, "avg_credit": 590.633, "exposure_share": 0.0668}], "pd_drivers": [{"feature": "credit_score", "coefficient": -0.6948767761}, {"feature": "dti", "coefficient": 0.2695435599}, {"feature": "job_unemployed", "coefficient": 0.1937214821}, {"feature": "term_months_60", "coefficient": 0.1506016015}, {"feature": "purpose_Medical", "coefficient": 0.1208775926}, {"feature": "job_student", "coefficient": 0.0950788618}, {"feature": "purpose_Small Business", "coefficient": 0.0882332249}, {"feature": "job_services", "coefficient": 0.0870182633}, {"feature": "job_entrepreneur", "coefficient": 0.075250661}, {"feature": "job_management", "coefficient": -0.0716771879}], "payment_behavior": [{"payment_behavior": "Severe delinquency (90+ DPD)", "count": 1438, "events": 1074, "rate": 0.7469}, {"payment_behavior": "Chronic late payer", "count": 441, "events": 290, "rate": 0.6576}, {"payment_behavior": "Occasional late", "count": 4832, "events": 404, "rate": 0.0836}, {"payment_behavior": "Always on time", "count": 8289, "events": 78, "rate": 0.0094}], "tx_indicators": [{"indicator": "IP shared by many accounts", "transactions": 3706, "share_of_all": 0.0741, "share_also_isolation_forest": 0.0019}, {"indicator": "Device shared by many accounts", "transactions": 3181, "share_of_all": 0.0636, "share_also_isolation_forest": 0.0016}, {"indicator": "Drains 80%+ of balance", "transactions": 2812, "share_of_all": 0.0562, "share_also_isolation_forest": 0.2045}, {"indicator": "Multiple login attempts (3+)", "transactions": 1924, "share_of_all": 0.0385, "share_also_isolation_forest": 0.2084}, {"indicator": "Amount in top 2% overall", "transactions": 1000, "share_of_all": 0.02, "share_also_isolation_forest": 0.334}, {"indicator": "Very long session (top 2%)", "transactions": 993, "share_of_all": 0.0199, "share_also_isolation_forest": 0.0624}, {"indicator": "Amount > 3 std above account norm", "transactions": 141, "share_of_all": 0.0028, "share_also_isolation_forest": 0.4255}], "tx_by_channel": [{"channel": "Branch", "count": 17278, "events": 859, "rate": 0.0497}, {"channel": "ATM", "count": 16552, "events": 674, "rate": 0.0407}, {"channel": "Online", "count": 16170, "events": 538, "rate": 0.0333}], "tx_by_type": [{"transaction_type": "Credit", "count": 11253, "events": 492, "rate": 0.0437}, {"transaction_type": "Debit", "count": 38747, "events": 1579, "rate": 0.0408}], "tx_by_location": [{"location": "El Paso", "count": 997, "events": 137, "rate": 0.1374}, {"location": "Memphis", "count": 1330, "events": 151, "rate": 0.1135}, {"location": "Miami", "count": 1278, "events": 102, "rate": 0.0798}, {"location": "Columbus", "count": 1048, "events": 76, "rate": 0.0725}, {"location": "Omaha", "count": 1298, "events": 94, "rate": 0.0724}, {"location": "Las Vegas", "count": 1124, "events": 66, "rate": 0.0587}, {"location": "San Diego", "count": 1139, "events": 66, "rate": 0.0579}, {"location": "San Jose", "count": 1159, "events": 65, "rate": 0.0561}, {"location": "Boston", "count": 1203, "events": 67, "rate": 0.0557}, {"location": "Albuquerque", "count": 849, "events": 46, "rate": 0.0542}], "tx_quarterly": [{"quarter": "2020Q1", "volume": 586999.39, "transactions": 2027, "suspicious": 79}, {"quarter": "2020Q2", "volume": 578895.08, "transactions": 1942, "suspicious": 69}, {"quarter": "2020Q3", "volume": 593938.1, "transactions": 1980, "suspicious": 78}, {"quarter": "2020Q4", "volume": 575261.69, "transactions": 2046, "suspicious": 86}, {"quarter": "2021Q1", "volume": 574005.22, "transactions": 1907, "suspicious": 85}, {"quarter": "2021Q2", "volume": 608741.43, "transactions": 2013, "suspicious": 90}, {"quarter": "2021Q3", "volume": 606648.73, "transactions": 1974, "suspicious": 83}, {"quarter": "2021Q4", "volume": 585535.43, "transactions": 2019, "suspicious": 78}, {"quarter": "2022Q1", "volume": 572386.58, "transactions": 1921, "suspicious": 79}, {"quarter": "2022Q2", "volume": 551334.2, "transactions": 1922, "suspicious": 79}, {"quarter": "2022Q3", "volume": 609867.72, "transactions": 1994, "suspicious": 90}, {"quarter": "2022Q4", "volume": 584572.77, "transactions": 1952, "suspicious": 77}, {"quarter": "2023Q1", "volume": 793407.67, "transactions": 2641, "suspicious": 112}, {"quarter": "2023Q2", "volume": 723116.88, "transactions": 2499, "suspicious": 111}, {"quarter": "2023Q3", "volume": 784478.57, "transactions": 2647, "suspicious": 103}, {"quarter": "2023Q4", "volume": 786653.86, "transactions": 2649, "suspicious": 102}, {"quarter": "2024Q1", "volume": 585633.34, "transactions": 2000, "suspicious": 76}, {"quarter": "2024Q2", "volume": 605543.47, "transactions": 1984, "suspicious": 76}, {"quarter": "2024Q3", "volume": 617406.09, "transactions": 2041, "suspicious": 98}, {"quarter": "2024Q4", "volume": 592213.69, "transactions": 1946, "suspicious": 80}, {"quarter": "2025Q1", "volume": 606373.7, "transactions": 1955, "suspicious": 80}, {"quarter": "2025Q2", "volume": 568072.75, "transactions": 1872, "suspicious": 90}, {"quarter": "2025Q3", "volume": 587622.77, "transactions": 2008, "suspicious": 76}, {"quarter": "2025Q4", "volume": 614901.56, "transactions": 2061, "suspicious": 94}], "tx_alert_levels": {"Normal": 37767, "Watch": 10162, "Medium": 1674, "High": 397}, "tx_top_alerts": [{"transaction_id": "TX048555", "account_id": "AC00454", "transaction_date": "2020-10-21", "amount": 1328.74, "channel": "ATM", "location": "Kansas City", "login_attempts": 5, "rule_flags": 3, "iso_score": 0.7494}, {"transaction_id": "TX006505", "account_id": "AC00083", "transaction_date": "2020-11-03", "amount": 1616.9, "channel": "Online", "location": "San Diego", "login_attempts": 4, "rule_flags": 3, "iso_score": 0.7183}, {"transaction_id": "TX017685", "account_id": "AC00170", "transaction_date": "2020-02-26", "amount": 1292.13, "channel": "Branch", "location": "Jacksonville", "login_attempts": 5, "rule_flags": 3, "iso_score": 0.689}, {"transaction_id": "TX012089", "account_id": "AC00431", "transaction_date": "2022-02-06", "amount": 1334.52, "channel": "Branch", "location": "San Jose", "login_attempts": 1, "rule_flags": 3, "iso_score": 0.6857}, {"transaction_id": "TX010038", "account_id": "AC00153", "transaction_date": "2020-07-12", "amount": 1207.72, "channel": "ATM", "location": "San Diego", "login_attempts": 1, "rule_flags": 3, "iso_score": 0.6613}, {"transaction_id": "TX040898", "account_id": "AC00464", "transaction_date": "2022-06-01", "amount": 1566.9, "channel": "ATM", "location": "Oklahoma City", "login_attempts": 1, "rule_flags": 3, "iso_score": 0.6513}, {"transaction_id": "TX031766", "account_id": "AC00071", "transaction_date": "2024-07-27", "amount": 1768.79, "channel": "ATM", "location": "Louisville", "login_attempts": 1, "rule_flags": 3, "iso_score": 0.6503}, {"transaction_id": "TX041070", "account_id": "AC00262", "transaction_date": "2023-04-02", "amount": 1200.23, "channel": "Online", "location": "Colorado Springs", "login_attempts": 1, "rule_flags": 3, "iso_score": 0.6063}, {"transaction_id": "TX033458", "account_id": "AC00336", "transaction_date": "2023-12-07", "amount": 1244.13, "channel": "Online", "location": "Philadelphia", "login_attempts": 1, "rule_flags": 3, "iso_score": 0.5849}, {"transaction_id": "TX044926", "account_id": "AC00285", "transaction_date": "2021-04-15", "amount": 1313.71, "channel": "Online", "location": "Denver", "login_attempts": 1, "rule_flags": 2, "iso_score": 0.7004}, {"transaction_id": "TX014754", "account_id": "AC00456", "transaction_date": "2020-05-02", "amount": 1145.24, "channel": "Branch", "location": "San Jose", "login_attempts": 1, "rule_flags": 2, "iso_score": 0.6998}, {"transaction_id": "TX011114", "account_id": "AC00131", "transaction_date": "2022-10-31", "amount": 940.07, "channel": "Online", "location": "Memphis", "login_attempts": 1, "rule_flags": 2, "iso_score": 0.6971}], "claims_by_type": [{"policy_type": "Auto", "claims": 3761, "total_paid": 19533702.93, "avg_claim": 5193.7524, "median_claim": 4194.2, "avg_days_to_report": 5.1308, "fraud_rate": 0.0768}, {"policy_type": "Health", "claims": 2176, "total_paid": 8182752.69, "avg_claim": 3760.4562, "median_claim": 3131.535, "avg_days_to_report": 5.2013, "fraud_rate": 0.0528}, {"policy_type": "Home", "claims": 2024, "total_paid": 24745195.08, "avg_claim": 12225.8869, "median_claim": 9941.445, "avg_days_to_report": 5.4185, "fraud_rate": 0.0618}, {"policy_type": "Travel", "claims": 577, "total_paid": 903151.53, "avg_claim": 1565.254, "median_claim": 1302.91, "avg_days_to_report": 5.1438, "fraud_rate": 0.0451}, {"policy_type": "Life", "claims": 462, "total_paid": 26881104.67, "avg_claim": 58184.2092, "median_claim": 47413.765, "avg_days_to_report": 5.0628, "fraud_rate": 0.0455}], "claim_flags": [{"indicator": "Claim > 2x typical for policy", "claims": 664, "fraud_rate_when_present": 0.2169, "fraud_rate_when_absent": 0.0518, "lift": 3.39}, {"indicator": "New policy (< 6 months)", "claims": 227, "fraud_rate_when_present": 0.1586, "fraud_rate_when_absent": 0.0616, "lift": 2.48}, {"indicator": "Reported late (> 20 days)", "claims": 109, "fraud_rate_when_present": 0.1376, "fraud_rate_when_absent": 0.0631, "lift": 2.15}, {"indicator": "Theft incident", "claims": 1026, "fraud_rate_when_present": 0.1111, "fraud_rate_when_absent": 0.0579, "lift": 1.74}, {"indicator": "2+ prior claims", "claims": 1075, "fraud_rate_when_present": 0.0986, "fraud_rate_when_absent": 0.0593, "lift": 1.54}, {"indicator": "No police report (Auto/Home)", "claims": 2658, "fraud_rate_when_present": 0.0929, "fraud_rate_when_absent": 0.0519, "lift": 1.45}, {"indicator": "No witnesses", "claims": 4051, "fraud_rate_when_present": 0.0755, "fraud_rate_when_absent": 0.0546, "lift": 1.18}], "claim_flag_curve": [{"red_flags": 0, "count": 2495, "events": 85, "rate": 0.0341}, {"red_flags": 1, "count": 3858, "events": 181, "rate": 0.0469}, {"red_flags": 2, "count": 2077, "events": 185, "rate": 0.0891}, {"red_flags": 3, "count": 490, "events": 90, "rate": 0.1837}, {"red_flags": 4, "count": 72, "events": 28, "rate": 0.3889}, {"red_flags": 5, "count": 8, "events": 7, "rate": 0.875}], "claims_trend": [{"claim_month": "2021Q1", "claims": 427, "fraud": 27}, {"claim_month": "2021Q2", "claims": 473, "fraud": 29}, {"claim_month": "2021Q3", "claims": 454, "fraud": 31}, {"claim_month": "2021Q4", "claims": 487, "fraud": 27}, {"claim_month": "2022Q1", "claims": 450, "fraud": 32}, {"claim_month": "2022Q2", "claims": 451, "fraud": 30}, {"claim_month": "2022Q3", "claims": 475, "fraud": 28}, {"claim_month": "2022Q4", "claims": 428, "fraud": 24}, {"claim_month": "2023Q1", "claims": 489, "fraud": 38}, {"claim_month": "2023Q2", "claims": 443, "fraud": 26}, {"claim_month": "2023Q3", "claims": 445, "fraud": 31}, {"claim_month": "2023Q4", "claims": 442, "fraud": 33}, {"claim_month": "2024Q1", "claims": 478, "fraud": 25}, {"claim_month": "2024Q2", "claims": 404, "fraud": 30}, {"claim_month": "2024Q3", "claims": 460, "fraud": 29}, {"claim_month": "2024Q4", "claims": 460, "fraud": 33}, {"claim_month": "2025Q1", "claims": 458, "fraud": 23}, {"claim_month": "2025Q2", "claims": 433, "fraud": 24}, {"claim_month": "2025Q3", "claims": 417, "fraud": 20}, {"claim_month": "2025Q4", "claims": 426, "fraud": 36}], "base_unknown_credit": [{"job": "unknown", "count": 330, "events": 152, "unknown_credit_rate": 0.4606}, {"job": "blue-collar", "count": 9253, "events": 3166, "unknown_credit_rate": 0.3422}, {"job": "housemaid", "count": 1060, "events": 319, "unknown_credit_rate": 0.3009}, {"job": "unemployed", "count": 1014, "events": 237, "unknown_credit_rate": 0.2337}, {"job": "services", "count": 3967, "events": 915, "unknown_credit_rate": 0.2307}, {"job": "retired", "count": 1718, "events": 393, "unknown_credit_rate": 0.2288}, {"job": "entrepreneur", "count": 1456, "events": 301, "unknown_credit_rate": 0.2067}, {"job": "self-employed", "count": 1421, "events": 282, "unknown_credit_rate": 0.1985}, {"job": "management", "count": 2924, "events": 458, "unknown_credit_rate": 0.1566}, {"job": "technician", "count": 6739, "events": 976, "unknown_credit_rate": 0.1448}, {"job": "admin", "count": 10419, "events": 1293, "unknown_credit_rate": 0.1241}, {"job": "student", "count": 875, "events": 104, "unknown_credit_rate": 0.1189}], "top_borrowers": [{"loan_id": "LN007079", "job": "unemployed", "grade": "D", "loan_amount": 5900.0, "credit_score": 642, "dti": 38.5, "times_30dpd": 6, "risk_score": 95.9, "loan_status": "Charged Off"}, {"loan_id": "LN012162", "job": "student", "grade": "E", "loan_amount": 5500.0, "credit_score": 567, "dti": 35.5, "times_30dpd": 6, "risk_score": 94.9, "loan_status": "Default"}, {"loan_id": "LN003416", "job": "student", "grade": "E", "loan_amount": 4000.0, "credit_score": 556, "dti": 27.2, "times_30dpd": 5, "risk_score": 91.4, "loan_status": "Charged Off"}, {"loan_id": "LN013022", "job": "unemployed", "grade": "E", "loan_amount": 5500.0, "credit_score": 591, "dti": 36.5, "times_30dpd": 4, "risk_score": 90.5, "loan_status": "Default"}, {"loan_id": "LN002608", "job": "unemployed", "grade": "E", "loan_amount": 7700.0, "credit_score": 543, "dti": 42.9, "times_30dpd": 7, "risk_score": 89.9, "loan_status": "Charged Off"}, {"loan_id": "LN005957", "job": "unemployed", "grade": "E", "loan_amount": 5900.0, "credit_score": 499, "dti": 39.0, "times_30dpd": 2, "risk_score": 89.7, "loan_status": "Default"}, {"loan_id": "LN011862", "job": "services", "grade": "E", "loan_amount": 12800.0, "credit_score": 494, "dti": 37.0, "times_30dpd": 6, "risk_score": 89.1, "loan_status": "Charged Off"}, {"loan_id": "LN005889", "job": "management", "grade": "E", "loan_amount": 53100.0, "credit_score": 580, "dti": 39.8, "times_30dpd": 4, "risk_score": 89.0, "loan_status": "Default"}, {"loan_id": "LN004664", "job": "blue-collar", "grade": "D", "loan_amount": 14500.0, "credit_score": 609, "dti": 37.3, "times_30dpd": 4, "risk_score": 88.9, "loan_status": "Default"}, {"loan_id": "LN014900", "job": "blue-collar", "grade": "E", "loan_amount": 11900.0, "credit_score": 480, "dti": 30.4, "times_30dpd": 3, "risk_score": 88.4, "loan_status": "Default"}, {"loan_id": "LN014233", "job": "self-employed", "grade": "E", "loan_amount": 30900.0, "credit_score": 550, "dti": 36.5, "times_30dpd": 2, "risk_score": 88.1, "loan_status": "Charged Off"}, {"loan_id": "LN012110", "job": "student", "grade": "D", "loan_amount": 9600.0, "credit_score": 634, "dti": 31.3, "times_30dpd": 6, "risk_score": 88.0, "loan_status": "Charged Off"}]};
+const $ = s => document.querySelector(s);
+const pct = (v, d = 1) => (v * 100).toFixed(d) + "%";
+const num = v => Math.round(v).toLocaleString("en-US");
+const money = v => v >= 1e6 ? "$" + (v / 1e6).toFixed(1) + "M" : v >= 1e3 ? "$" + (v / 1e3).toFixed(1) + "K" : "$" + v.toFixed(0);
+const cap = s => String(s).charAt(0).toUpperCase() + String(s).slice(1);
+const TIER = {Low: "var(--good)", Medium: "var(--warn)", High: "var(--serious)", Critical: "var(--critical)"};
+const NS = "http://www.w3.org/2000/svg";
+const tip = $("#tip");
+function showTip(e, html) { tip.innerHTML = html; tip.style.opacity = 1; const x = Math.min(e.clientX + 12, innerWidth - tip.offsetWidth - 8); tip.style.left = x + "px"; tip.style.top = (e.clientY - 34) + "px"; }
+function hideTip() { tip.style.opacity = 0; }
+function el(tag, attrs = {}, parent) { const n = document.createElementNS(NS, tag); for (const k in attrs) n.setAttribute(k, attrs[k]); if (parent) parent.appendChild(n); return n; }
+
+/* Horizontal bar chart. rows: [{label, value, tip?, color?}] */
+function hbar(target, rows, {fmt = pct, labelW = 132, rowH = 26, color = "var(--s1)", hi = 0, sort = true} = {}) {
+  const box = $(target); box.innerHTML = "";
+  if (sort) rows = [...rows].sort((a, b) => b.value - a.value);
+  const W = Math.max(box.clientWidth, 280), H = rows.length * rowH + 4;
+  const svg = el("svg", {width: W, height: H, viewBox: `0 0 ${W} ${H}`, role: "img"}, box);
+  const max = Math.max(...rows.map(r => r.value)) || 1, plotW = W - labelW - 56;
+  rows.forEach((r, i) => {
+    const y = i * rowH, w = Math.max(2, r.value / max * plotW);
+    const g = el("g", {}, svg);
+    el("rect", {x: 0, y, width: W, height: rowH, fill: "transparent"}, g);
+    const t = el("text", {x: labelW - 10, y: y + rowH / 2 + 4, "text-anchor": "end", "font-size": 12, fill: "var(--ink-2)"}, g);
+    t.textContent = r.label.length > 34 ? r.label.slice(0, 33) + "…" : r.label;
+    el("rect", {x: labelW, y: y + 5, width: w, height: rowH - 10, rx: 3, fill: r.color || (i < hi ? "var(--s2)" : color)}, g);
+    const v = el("text", {x: labelW + w + 6, y: y + rowH / 2 + 4, "font-size": 11.5, fill: "var(--ink-2)"}, g); v.textContent = fmt(r.value);
+    g.addEventListener("mousemove", e => showTip(e, r.tip || `<b>${r.label}</b> · ${fmt(r.value)}`)); g.addEventListener("mouseleave", hideTip);
+  });
+}
+
+/* Vertical bar chart */
+function vbar(target, rows, {fmt = pct, H = 220, color = "var(--s1)"} = {}) {
+  const box = $(target); box.innerHTML = "";
+  const W = Math.max(box.clientWidth, 260), padB = 26, padT = 22, padL = 4;
+  const svg = el("svg", {width: W, height: H, viewBox: `0 0 ${W} ${H}`, role: "img"}, box);
+  const max = Math.max(...rows.map(r => r.value)) || 1, bw = (W - padL) / rows.length;
+  el("line", {x1: 0, x2: W, y1: H - padB + .5, y2: H - padB + .5, stroke: "var(--axis)"}, svg);
+  rows.forEach((r, i) => {
+    const h = r.value / max * (H - padB - padT), x = padL + i * bw + bw * .2, w = bw * .6, y = H - padB - h;
+    const g = el("g", {}, svg);
+    el("rect", {x: padL + i * bw, y: 0, width: bw, height: H, fill: "transparent"}, g);
+    el("path", {d: `M${x},${H - padB} V${y + 4} q0,-4 4,-4 h${w - 8} q4,0 4,4 V${H - padB} Z`, fill: r.color || color}, g);
+    const v = el("text", {x: x + w / 2, y: y - 6, "text-anchor": "middle", "font-size": 11.5, fill: "var(--ink)", "font-weight": 600}, g); v.textContent = fmt(r.value);
+    const l = el("text", {x: x + w / 2, y: H - 8, "text-anchor": "middle", "font-size": 12, fill: "var(--ink-2)"}, g); l.textContent = r.label;
+    g.addEventListener("mousemove", e => showTip(e, r.tip || `<b>${r.label}</b> · ${fmt(r.value)}`)); g.addEventListener("mouseleave", hideTip);
+  });
+}
+
+/* Line chart (single series) with crosshair */
+function line(target, rows, {fmt = num, H = 230, area = true} = {}) {
+  const box = $(target); box.innerHTML = "";
+  const W = Math.max(box.clientWidth, 300), pl = 48, pr = 10, pt = 10, pb = 26;
+  const svg = el("svg", {width: W, height: H, viewBox: `0 0 ${W} ${H}`, role: "img"}, box);
+  const vals = rows.map(r => r.value), max = Math.max(...vals) * 1.1, min = 0;
+  const X = i => pl + i * (W - pl - pr) / (rows.length - 1), Y = v => pt + (1 - (v - min) / (max - min)) * (H - pt - pb);
+  for (let k = 0; k <= 4; k++) { const v = min + (max - min) * k / 4, y = Y(v);
+    el("line", {x1: pl, x2: W - pr, y1: y, y2: y, stroke: k ? "var(--grid)" : "var(--axis)"}, svg);
+    const t = el("text", {x: pl - 8, y: y + 4, "text-anchor": "end", "font-size": 11, fill: "var(--muted)"}, svg); t.textContent = fmt(v); }
+  rows.forEach((r, i) => { if (i % 4 === 0) { const t = el("text", {x: X(i), y: H - 6, "text-anchor": "middle", "font-size": 11, fill: "var(--muted)"}, svg); t.textContent = r.label.slice(0, 4); } });
+  const d = rows.map((r, i) => (i ? "L" : "M") + X(i) + "," + Y(r.value)).join("");
+  if (area) el("path", {d: d + `L${X(rows.length - 1)},${Y(0)}L${X(0)},${Y(0)}Z`, fill: "var(--s1)", opacity: .08}, svg);
+  el("path", {d, fill: "none", stroke: "var(--s1)", "stroke-width": 2, "stroke-linejoin": "round"}, svg);
+  const cross = el("line", {y1: pt, y2: H - pb, stroke: "var(--axis)", opacity: 0}, svg);
+  const dot = el("circle", {r: 4.5, fill: "var(--s1)", stroke: "var(--surface)", "stroke-width": 2, opacity: 0}, svg);
+  const hit = el("rect", {x: pl, y: 0, width: W - pl - pr, height: H, fill: "transparent"}, svg);
+  hit.addEventListener("mousemove", e => { const bb = svg.getBoundingClientRect(); const i = Math.max(0, Math.min(rows.length - 1, Math.round((e.clientX - bb.left - pl) / ((W - pl - pr) / (rows.length - 1)))));
+    cross.setAttribute("x1", X(i)); cross.setAttribute("x2", X(i)); cross.setAttribute("opacity", 1);
+    dot.setAttribute("cx", X(i)); dot.setAttribute("cy", Y(rows[i].value)); dot.setAttribute("opacity", 1);
+    showTip(e, rows[i].tip || `<b>${rows[i].label}</b> · ${fmt(rows[i].value)}`); });
+  hit.addEventListener("mouseleave", () => { hideTip(); cross.setAttribute("opacity", 0); dot.setAttribute("opacity", 0); });
+}
+
+function kpis(target, items) { $(target).innerHTML = items.map(([l, v, n]) => `<div class="kpi"><div class="l">${l}</div><div class="v">${v}</div><div class="n">${n || ""}</div></div>`).join(""); }
+function table(target, cols, rows) {
+  $(target).innerHTML = `<thead><tr>${cols.map(c => `<th class="${c.r ? "r" : ""}">${c.h}</th>`).join("")}</tr></thead>` +
+    `<tbody>${rows.map(r => `<tr>${cols.map(c => `<td class="${c.r ? "r" : ""}">${c.f ? c.f(r[c.k], r) : r[c.k]}</td>`).join("")}</tr>`).join("")}</tbody>`;
+}
+const tierPill = t => `<span class="pill"><i style="background:${TIER[t]}"></i>${t}</span>`;
+
+const K = D.kpis, by = D.default_by;
+const R = {};  // render functions per tab, re-run on resize
+R.overview = () => {
+  kpis("#k-over", [
+    ["Loan book", money(K.loan_book), num(K.loans) + " loans"],
+    ["Default rate", pct(K.default_rate), money(K.defaulted_amount) + " defaulted"],
+    ["Critical-risk exposure", money(K.critical_exposure), num(K.critical_borrowers) + " borrowers"],
+    ["Suspicious transactions", num(K.suspicious_tx), pct(K.suspicious_tx / K.transactions) + " of " + num(K.transactions)],
+    ["Claims for investigation", num(K.claims_for_review), "3+ red flags · fraud base rate " + pct(K.claim_fraud_rate)],
+  ]);
+  const tot = D.tiers.reduce((a, t) => a + t.borrowers, 0);
+  $("#tier-stack").innerHTML = `<div class="stack">${D.tiers.map(t => `<div title="${t.risk_tier}" style="flex:${t.borrowers};background:${TIER[t.risk_tier]}"></div>`).join("")}</div>`;
+  table("#tier-table", [{h: "Tier", k: "risk_tier", f: tierPill}, {h: "Borrowers", k: "borrowers", r: 1, f: num},
+    {h: "Share", k: "borrowers", r: 1, f: v => pct(v / tot)}, {h: "Exposure", k: "exposure", r: 1, f: money},
+    {h: "Avg credit score", k: "avg_credit", r: 1, f: num}, {h: "Default rate", k: "default_rate", r: 1, f: v => pct(v)}], D.tiers);
+  const c = D.tiers.find(t => t.risk_tier === "Critical"), lo = D.tiers.find(t => t.risk_tier === "Low");
+  $("#tier-ins").innerHTML = `<b>${pct(c.borrowers / tot)}</b> of borrowers are Critical, holding <b>${money(c.exposure)}</b> of exposure — they default ${Math.round(c.default_rate / lo.default_rate)}× more often than Low-tier borrowers.`;
+  vbar("#ch-tier", D.tiers.map(t => ({label: t.risk_tier, value: t.default_rate, color: TIER[t.risk_tier], tip: `<b>${t.risk_tier}</b> · ${pct(t.default_rate)} default · ${num(t.borrowers)} loans`})), {fmt: v => pct(v, 0)});
+  const jobs = by.job, seg = [...D.segments].sort((a, b) => b.default_rate - a.default_rate)[0];
+  const ind = [...D.tx_indicators].sort((a, b) => b.share_also_isolation_forest - a.share_also_isolation_forest)[0];
+  const cf = D.claim_flags[0], cc = D.claim_flag_curve;
+  table("#findings", [{h: "Business question", k: "q"}, {h: "Answer", k: "a"}, {h: "Recommended action", k: "act"}], [
+    {q: "Which customer group defaults most?", a: `${cap(jobs[0].job)} (${pct(jobs[0].rate)}) and ${jobs[1].job} (${pct(jobs[1].rate)}) vs ${pct(K.default_rate)} average`, act: "Require income verification / co-signer"},
+    {q: "Which transactions are abnormal?", a: `${num(K.suspicious_tx)} flagged; "${ind.indicator}" overlaps most with the ML model`, act: `Step-up auth on ${num(K.high_alerts)} high alerts`},
+    {q: "Which customer segment is most risky?", a: `${seg.segment}: ${pct(seg.default_rate, 0)} default, avg credit ${num(seg.avg_credit)}`, act: "Early collections outreach"},
+    {q: "Which claim patterns are abnormal?", a: `"${cf.indicator}" (${cf.lift}× lift); 4 flags → ${pct(cc[4].rate, 0)} fraud`, act: "Route 3+ flag claims to SIU"},
+  ].map(r => ({...r, q: `<b>${r.q}</b>`})));
+};
+R.credit = () => {
+  kpis("#k-credit", [["Loans", num(K.loans), money(K.loan_book) + " originated"], ["Default rate", pct(K.default_rate), "portfolio average"],
+    ["Defaulted amount", money(K.defaulted_amount), pct(K.defaulted_amount / K.loan_book) + " of book"], ["PD model AUC", K.pd_auc.toFixed(2), "logistic regression, 25% hold-out"]]);
+  hbar("#ch-job", by.job.map(r => ({label: cap(r.job), value: r.rate, tip: `<b>${cap(r.job)}</b> · ${pct(r.rate)} · ${num(r.count)} loans`})), {hi: 2});
+  $("#job-ins").innerHTML = `<b>${cap(by.job[0].job)}</b> and <b>${by.job[1].job}</b> borrowers default at ${(by.job[0].rate / K.default_rate).toFixed(1)}× and ${(by.job[1].rate / K.default_rate).toFixed(1)}× the portfolio average.`;
+  const ord = (arr, key, order) => order.map(o => arr.find(r => String(r[key]) === o)).filter(Boolean);
+  hbar("#ch-credit", ord(by.credit_band, "credit_band", ["<580", "580-619", "620-659", "660-699", "700-739", "740+"]).map(r => ({label: r.credit_band, value: r.rate, tip: `<b>${r.credit_band}</b> · ${pct(r.rate)} · ${num(r.count)} loans`})), {sort: false, labelW: 80});
+  hbar("#ch-purpose", by.purpose.map(r => ({label: r.purpose, value: r.rate})), {labelW: 128, hi: 2});
+  hbar("#ch-dti", ord(by.dti_band, "dti_band", ["<15", "15-20", "20-25", "25-30", "30-35", "35+"]).map(r => ({label: "DTI " + r.dti_band, value: r.rate})), {sort: false, labelW: 76});
+  hbar("#ch-age", ord(by.age_band, "age_band", ["18-25", "26-35", "36-50", "51-65", "65+"]).map(r => ({label: r.age_band, value: r.rate})), {sort: false, labelW: 60});
+  $("#pd-q").textContent = `Standardised logistic-regression coefficients (test AUC ${K.pd_auc.toFixed(2)})`;
+  hbar("#ch-drivers", D.pd_drivers.map(r => ({label: r.feature.replace(/_/g, " "), value: Math.abs(r.coefficient), color: r.coefficient > 0 ? "var(--s2)" : "var(--s1)", tip: `<b>${r.feature}</b> · coef ${r.coefficient.toFixed(3)}`})), {fmt: v => v.toFixed(2), labelW: 150});
+  hbar("#ch-pay", D.payment_behavior.map(r => ({label: r.payment_behavior, value: r.rate, tip: `<b>${r.payment_behavior}</b> · ${pct(r.rate)} default · ${num(r.count)} borrowers`})), {labelW: 196, hi: 1});
+};
+R.segments = () => {
+  const segs = [...D.segments].sort((a, b) => a.default_rate - b.default_rate);
+  const col = ["var(--good)", "var(--s1)", "var(--warn)", "var(--critical)"];
+  $("#seg-cards").innerHTML = segs.map((s, i) => `<div class="segc"><div class="t"><span class="pill"><i style="background:${col[i]}"></i></span> ${s.segment}</div>
+    <div class="d">${pct(s.default_rate)}</div><div style="color:var(--muted);font-size:12px">default rate · ${num(s.customers)} borrowers</div>
+    <dl><dt>Avg credit score</dt><dd>${num(s.avg_credit)}</dd><dt>Avg DTI</dt><dd>${s.avg_dti.toFixed(1)}%</dd><dt>Avg income</dt><dd>${money(s.avg_income)}</dd>
+    <dt>Avg loan</dt><dd>${money(s.avg_loan)}</dd><dt>Late payments (30+ DPD)</dt><dd>${s.avg_late.toFixed(1)}</dd></dl></div>`).join("");
+  hbar("#ch-seg", segs.map((s, i) => ({label: s.segment, value: s.default_rate, color: col[i]})), {labelW: 150});
+  hbar("#ch-unknown", D.base_unknown_credit.map(r => ({label: cap(r.job), value: r.unknown_credit_rate, tip: `<b>${cap(r.job)}</b> · ${pct(r.unknown_credit_rate)} unknown · ${num(r.count)} customers`})), {hi: 3});
+  table("#tb-borrowers", [{h: "Loan", k: "loan_id"}, {h: "Occupation", k: "job", f: cap}, {h: "Grade", k: "grade"}, {h: "Amount", k: "loan_amount", r: 1, f: v => "$" + num(v)},
+    {h: "Credit score", k: "credit_score", r: 1}, {h: "DTI", k: "dti", r: 1, f: v => v + "%"}, {h: "30+ DPD", k: "times_30dpd", r: 1}, {h: "Risk score", k: "risk_score", r: 1}, {h: "Status", k: "loan_status"}], D.top_borrowers);
+};
+R.tx = () => {
+  const lv = D.tx_alert_levels;
+  kpis("#k-tx", [["Transactions", num(K.transactions), money(K.tx_volume) + " volume · " + num(K.accounts) + " accounts"], ["Suspicious", num(K.suspicious_tx), pct(K.suspicious_tx / K.transactions) + " of all transactions"],
+    ["High alerts", num(lv.High), "3+ rules, or model + 2 rules"], ["Medium alerts", num(lv.Medium), "2 rules, or model only"]]);
+  line("#ch-txq", D.tx_quarterly.map(r => ({label: r.quarter, value: r.transactions, tip: `<b>${r.quarter}</b> · ${num(r.transactions)} tx · ${num(r.suspicious)} suspicious (${pct(r.suspicious / r.transactions)})`})));
+  vbar("#ch-alert", ["Normal", "Watch", "Medium", "High"].map(k => ({label: k, value: lv[k] || 0, color: {Normal: "var(--axis)", Watch: "var(--warn)", Medium: "var(--serious)", High: "var(--critical)"}[k]})), {fmt: num});
+  hbar("#ch-ind", D.tx_indicators.map(r => ({label: r.indicator, value: r.transactions, tip: `<b>${r.indicator}</b> · ${num(r.transactions)} tx · ${pct(r.share_also_isolation_forest)} also flagged by Isolation Forest`})), {fmt: num, labelW: 228});
+  hbar("#ch-chan", D.tx_by_channel.map(r => ({label: r.channel, value: r.rate})), {labelW: 70, hi: 1});
+  hbar("#ch-type", D.tx_by_type.map(r => ({label: r.transaction_type, value: r.rate})), {labelW: 70});
+  table("#tb-alerts", [{h: "Transaction", k: "transaction_id"}, {h: "Account", k: "account_id"}, {h: "Date", k: "transaction_date"}, {h: "Amount", k: "amount", r: 1, f: v => "$" + v.toLocaleString("en-US", {minimumFractionDigits: 2})},
+    {h: "Channel", k: "channel"}, {h: "Location", k: "location"}, {h: "Logins", k: "login_attempts", r: 1}, {h: "Rules hit", k: "rule_flags", r: 1}, {h: "Anomaly score", k: "iso_score", r: 1, f: v => v.toFixed(2)}], D.tx_top_alerts);
+};
+R.claims = () => {
+  const tot = D.claims_by_type.reduce((a, r) => a + r.total_paid, 0);
+  kpis("#k-claims", [["Claims", num(K.claims), money(tot) + " claimed"], ["Paid out", money(K.claims_paid), "status = Paid"], ["Confirmed fraud rate", pct(K.claim_fraud_rate), "portfolio average"], ["Flagged for review", num(K.claims_for_review), "3+ red flags"]]);
+  const cc = D.claim_flag_curve;
+  vbar("#ch-curve", cc.map(r => ({label: r.red_flags === 5 ? "5+" : String(r.red_flags), value: r.rate, tip: `<b>${r.red_flags} flags</b> · ${pct(r.rate)} fraud · ${num(r.count)} claims`})), {fmt: v => pct(v, 0)});
+  $("#curve-ins").innerHTML = `Claims with no red flags are fraudulent ${pct(cc[0].rate)} of the time; with 4 flags it is <b>${pct(cc[4].rate, 0)}</b>. Flag count is a simple, explainable triage score.`;
+  hbar("#ch-lift", D.claim_flags.map(r => ({label: r.indicator, value: r.lift, tip: `<b>${r.indicator}</b> · ${pct(r.fraud_rate_when_present)} fraud when present vs ${pct(r.fraud_rate_when_absent)} when absent · ${num(r.claims)} claims`})), {fmt: v => v.toFixed(2) + "×", labelW: 200, hi: 2});
+  table("#tb-ptype", [{h: "Policy type", k: "policy_type"}, {h: "Claims", k: "claims", r: 1, f: num}, {h: "Total claimed", k: "total_paid", r: 1, f: money}, {h: "Avg claim", k: "avg_claim", r: 1, f: v => "$" + num(v)},
+    {h: "Median claim", k: "median_claim", r: 1, f: v => "$" + num(v)}, {h: "Avg days to report", k: "avg_days_to_report", r: 1, f: v => v.toFixed(1)}, {h: "Fraud rate", k: "fraud_rate", r: 1, f: v => pct(v)}], D.claims_by_type);
+};
+
+let current = "overview";
+function show(p) { current = p; document.querySelectorAll(".page").forEach(s => s.classList.toggle("on", s.id === p));
+  document.querySelectorAll("#tabs button").forEach(b => b.setAttribute("aria-selected", b.dataset.p === p)); R[p](); try { localStorage.setItem("tab", p); } catch (e) {} }
+document.querySelectorAll("#tabs button").forEach(b => b.onclick = () => show(b.dataset.p));
+$("#theme").onclick = () => { const r = document.documentElement, dark = r.dataset.theme ? r.dataset.theme === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+  r.dataset.theme = dark ? "light" : "dark"; try { localStorage.setItem("theme", r.dataset.theme); } catch (e) {} };
+try { const t = localStorage.getItem("theme"); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
+let rt; addEventListener("resize", () => { clearTimeout(rt); rt = setTimeout(() => R[current](), 120); });
+let start = "overview"; try { start = new URLSearchParams(location.search).get("tab") || localStorage.getItem("tab") || "overview"; } catch (e) {}
+show(R[start] ? start : "overview");
+</script>
+</body>
+</html>

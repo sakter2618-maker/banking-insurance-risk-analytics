@@ -1,0 +1,5 @@
+customer_occupation,count,events,rate
+Student,13059,881,0.0675
+Doctor,12578,484,0.0385
+Engineer,12491,439,0.0351
+Retired,11872,267,0.0225

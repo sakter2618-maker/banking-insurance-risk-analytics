@@ -1,0 +1,13 @@
+job,count,events,unknown_credit_rate
+unknown,330,152,0.4606
+blue-collar,9253,3166,0.3422
+housemaid,1060,319,0.3009
+unemployed,1014,237,0.2337
+services,3967,915,0.2307
+retired,1718,393,0.2288
+entrepreneur,1456,301,0.2067
+self-employed,1421,282,0.1985
+management,2924,458,0.1566
+technician,6739,976,0.1448
+admin,10419,1293,0.1241
+student,875,104,0.1189

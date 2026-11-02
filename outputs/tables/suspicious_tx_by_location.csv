@@ -1,0 +1,44 @@
+location,count,events,rate
+El Paso,997,137,0.1374
+Memphis,1330,151,0.1135
+Miami,1278,102,0.0798
+Columbus,1048,76,0.0725
+Omaha,1298,94,0.0724
+Las Vegas,1124,66,0.0587
+San Diego,1139,66,0.0579
+San Jose,1159,65,0.0561
+Boston,1203,67,0.0557
+Albuquerque,849,46,0.0542
+Nashville,1124,56,0.0498
+Mesa,1228,61,0.0497
+Virginia Beach,1075,53,0.0493
+Washington,964,47,0.0488
+Philadelphia,1343,64,0.0477
+San Antonio,1195,55,0.046
+Fort Worth,1396,64,0.0458
+New York,1150,52,0.0452
+Houston,1217,54,0.0444
+Atlanta,1245,52,0.0418
+Detroit,1230,47,0.0382
+San Francisco,1105,41,0.0371
+Portland,811,29,0.0358
+Kansas City,1211,43,0.0355
+Jacksonville,1216,43,0.0354
+Chicago,1195,40,0.0335
+Austin,1146,38,0.0332
+Milwaukee,1100,33,0.03
+Charlotte,1347,40,0.0297
+Baltimore,996,28,0.0281
+Tucson,1322,36,0.0272
+Phoenix,1155,31,0.0268
+Sacramento,1055,28,0.0265
+Seattle,1208,32,0.0265
+Oklahoma City,1345,34,0.0253
+Los Angeles,1318,33,0.025
+Colorado Springs,1141,25,0.0219
+Indianapolis,1104,14,0.0127
+Louisville,1031,13,0.0126
+Denver,1267,15,0.0118
+Dallas,971,0,0.0
+Fresno,1177,0,0.0
+Raleigh,1187,0,0.0

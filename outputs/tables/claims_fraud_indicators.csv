@@ -1,0 +1,8 @@
+indicator,claims,fraud_rate_when_present,fraud_rate_when_absent,lift
+Claim > 2x typical for policy,664,0.2169,0.0518,3.39
+New policy (< 6 months),227,0.1586,0.0616,2.48
+Reported late (> 20 days),109,0.1376,0.0631,2.15
+Theft incident,1026,0.1111,0.0579,1.74
+2+ prior claims,1075,0.0986,0.0593,1.54
+No police report (Auto/Home),2658,0.0929,0.0519,1.45
+No witnesses,4051,0.0755,0.0546,1.18

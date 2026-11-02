@@ -1,0 +1,7 @@
+channel,transaction_type,drain_transactions,avg_amount,pct_of_all_tx
+ATM,Debit,971,714.98,1.94
+Online,Debit,648,699.08,1.3
+Branch,Debit,487,686.69,0.97
+Online,Credit,325,608.29,0.65
+Branch,Credit,267,657.16,0.53
+ATM,Credit,114,713.9,0.23

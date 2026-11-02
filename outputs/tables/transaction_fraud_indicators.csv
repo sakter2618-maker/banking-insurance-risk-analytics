@@ -1,0 +1,8 @@
+indicator,transactions,share_of_all,share_also_isolation_forest
+IP shared by many accounts,3706,0.0741,0.0019
+Device shared by many accounts,3181,0.0636,0.0016
+Drains 80%+ of balance,2812,0.0562,0.2045
+Multiple login attempts (3+),1924,0.0385,0.2084
+Amount in top 2% overall,1000,0.02,0.334
+Very long session (top 2%),993,0.0199,0.0624
+Amount > 3 std above account norm,141,0.0028,0.4255

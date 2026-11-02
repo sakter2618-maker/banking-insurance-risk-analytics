@@ -1,0 +1,13 @@
+job,count,events,rate
+unemployed,382,123,0.322
+student,295,76,0.2576
+entrepreneur,504,71,0.1409
+services,1478,201,0.136
+housemaid,379,50,0.1319
+unknown,116,15,0.1293
+blue-collar,3371,422,0.1252
+retired,610,71,0.1164
+self-employed,535,62,0.1159
+admin,3806,417,0.1096
+technician,2444,249,0.1019
+management,1080,89,0.0824

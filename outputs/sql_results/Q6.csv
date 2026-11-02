@@ -1,0 +1,5 @@
+payment_behavior,borrowers,default_rate_pct
+Severe delinquency (90+ DPD),1438,74.69
+Chronic late payer,441,65.76
+Occasional late,4832,8.36
+Always on time,8289,0.94

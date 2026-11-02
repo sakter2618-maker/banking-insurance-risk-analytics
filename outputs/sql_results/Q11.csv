@@ -1,0 +1,6 @@
+policy_type,claims,total_claimed,avg_claim,avg_days_to_report,fraud_rate_pct
+Auto,3761,19533703.0,5194.0,5.1,7.68
+Health,2176,8182753.0,3760.0,5.2,5.28
+Home,2024,24745195.0,12226.0,5.4,6.18
+Travel,577,903152.0,1565.0,5.1,4.51
+Life,462,26881105.0,58184.0,5.1,4.55

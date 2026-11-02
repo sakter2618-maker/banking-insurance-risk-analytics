@@ -1,0 +1,13 @@
+job,loans,defaults,default_rate_pct
+unemployed,382,123,32.2
+student,295,76,25.76
+entrepreneur,504,71,14.09
+services,1478,201,13.6
+housemaid,379,50,13.19
+unknown,116,15,12.93
+blue-collar,3371,422,12.52
+retired,610,71,11.64
+self-employed,535,62,11.59
+admin,3806,417,10.96
+technician,2444,249,10.19
+management,1080,89,8.24

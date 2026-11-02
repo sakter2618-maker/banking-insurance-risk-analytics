@@ -1,0 +1,11 @@
+job,age_band,loans,default_rate_pct,lift_vs_avg
+unemployed,26-35,133,32.33,2.63
+student,26-35,133,29.32,2.38
+unemployed,36-50,180,27.22,2.21
+student,18-25,143,23.08,1.88
+blue-collar,18-25,116,16.38,1.33
+housemaid,51-65,116,16.38,1.33
+entrepreneur,36-50,265,15.47,1.26
+services,36-50,643,15.09,1.23
+entrepreneur,26-35,139,12.95,1.05
+services,26-35,605,12.73,1.03

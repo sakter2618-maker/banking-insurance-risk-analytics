@@ -1,0 +1,7 @@
+channel,transaction_type,transactions,avg_amount
+ATM,Credit,1375,301.9
+ATM,Debit,15177,303.16
+Branch,Credit,5034,315.83
+Branch,Debit,12244,282.17
+Online,Credit,4844,294.64
+Online,Debit,11326,300.66

@@ -1,0 +1,5 @@
+payment_behavior,count,events,rate
+Severe delinquency (90+ DPD),1438,1074,0.7469
+Chronic late payer,441,290,0.6576
+Occasional late,4832,404,0.0836
+Always on time,8289,78,0.0094

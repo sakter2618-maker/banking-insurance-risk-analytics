@@ -1,0 +1,26 @@
+claim_id,customer_id,policy_type,incident_type,claim_amount,claim_status,red_flags
+CL000041,CU37759,Auto,Collision,45726.25,Denied,5
+CL001482,CU36592,Home,Water Damage,33506.52,Denied,5
+CL005516,CU15029,Home,Theft,27199.52,Under Investigation,5
+CL003799,CU04344,Home,Theft,26939.84,Denied,5
+CL001902,CU09926,Auto,Theft,22369.61,Denied,5
+CL000587,CU30319,Auto,Theft,13833.83,Denied,5
+CL007987,CU26504,Home,Theft,41304.03,Under Investigation,4
+CL003666,CU00679,Auto,Theft,36782.16,Denied,4
+CL003043,CU18264,Home,Theft,35320.78,Denied,4
+CL006884,CU11930,Home,Theft,29008.24,Denied,4
+CL004404,CU35516,Home,Theft,28932.5,Denied,4
+CL000668,CU35258,Home,Water Damage,27242.16,Open,4
+CL005817,CU02347,Home,Water Damage,25105.53,Denied,4
+CL003871,CU06018,Home,Theft,24942.8,Denied,4
+CL006356,CU12846,Home,Fire,24614.58,Under Investigation,4
+CL008151,CU36694,Auto,Theft,23523.11,Denied,4
+CL006301,CU38937,Home,Theft,20097.73,Under Investigation,4
+CL004092,CU05754,Auto,Theft,19410.39,Denied,4
+CL008248,CU02769,Home,Theft,19301.43,Under Investigation,4
+CL007871,CU27473,Auto,Collision,18066.76,Under Investigation,4
+CL005772,CU04777,Auto,Theft,18002.04,Denied,4
+CL006311,CU14742,Home,Water Damage,17347.6,Denied,4
+CL007643,CU18411,Auto,Collision,13786.38,Under Investigation,4
+CL005347,CU06847,Home,Water Damage,13242.51,Denied,4
+CL008649,CU10055,Auto,Theft,13040.52,Denied,4

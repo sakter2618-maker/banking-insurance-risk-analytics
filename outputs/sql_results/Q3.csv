@@ -1,0 +1,15 @@
+purpose,term_months,loans,default_rate_pct,avg_interest_rate
+Small Business,60,296,19.26,15.52
+Medical,60,297,16.84,15.9
+Education,60,306,15.69,16.23
+Medical,36,609,15.6,14.11
+Personal,60,765,15.42,15.44
+Small Business,36,604,14.24,14.36
+Home Improvement,60,634,13.72,15.52
+Debt Consolidation,60,1630,13.37,15.59
+Auto,60,836,11.6,15.21
+Education,36,710,11.55,14.33
+Personal,36,1670,11.26,14.19
+Auto,36,1790,10.89,14.06
+Debt Consolidation,36,3304,10.84,13.98
+Home Improvement,36,1549,10.78,14.28
