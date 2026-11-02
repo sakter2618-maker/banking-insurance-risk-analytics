@@ -7,7 +7,7 @@
 ## ১. ৩০ সেকেন্ডের Project Pitch
 
 **English (মুখস্থ করে নিন):**
-> "I built an end-to-end risk analytics project for banking and insurance. I used 50,000 real bank transactions and 41,000 real bank customers, and because those files had no loan outcomes or insurance claims, I generated a synthetic loan book and claims table linked to the real customers, using documented industry risk rules. I answered four business questions with Python, SQL and Excel: which customers default most, which transactions look abnormal, which segment is riskiest, and which claim patterns suggest fraud. I built a probability-of-default model, a K-Means segmentation, an Isolation Forest for anomalies, and a composite risk score — and presented everything in a live web dashboard and a written risk report."
+> "I built an end-to-end risk analytics project for banking and insurance. I used 50,000 real bank transactions and 41,000 real bank customers, and because those files had no loan outcomes or insurance claims, I generated a synthetic loan book and claims table linked to the real customers, using documented industry risk rules. I answered four business questions with Python, SQL and Excel: which customers default most, which transactions look abnormal, which segment is riskiest, and which claim patterns suggest fraud. I built a probability-of-default model, a K-Means segmentation, an Isolation Forest for anomalies, and a composite risk score — and presented everything in an interactive Streamlit app and a written risk report."
 
 ---
 
@@ -92,3 +92,13 @@ English:
 | Critical tier | 972 borrowers, 61% default, $15.2M |
 | Claims / fraud rate | 9,000 / 6.4% |
 | Claims for review | 570 (3+ red flags) |
+
+---
+
+## ৭. Dashboard নিয়ে প্রশ্ন
+
+**Q: Why Streamlit?**
+
+বাংলা: Streamlit দিয়ে Python-এই পুরো interactive app বানানো যায়, আর free-তে live link পাওয়া যায়। Filter বদলালে সব chart আর সংখ্যা নতুন করে হিসাব হয়।
+
+> "Streamlit let me build the whole interactive app in Python, reusing the same pandas logic as my analysis. Users can filter by loan grade, purpose, channel or policy type, and download watch-lists — for example Critical-tier borrowers or the fraud alert queue — as CSV for the operations team."

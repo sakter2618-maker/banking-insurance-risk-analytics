@@ -7,4 +7,4 @@ STEPS = ["src/01_prepare_data.py", "src/02_risk_analysis.py", "src/03_run_sql.py
 for s in STEPS:
     print(f"\n=== {s} ===")
     subprocess.run([sys.executable, s], check=True)
-print("\nDone. Open docs/index.html in your browser to see the dashboard.")
+print("\nDone. Run  streamlit run app.py  for the interactive app, or open docs/index.html.")

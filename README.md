@@ -3,7 +3,7 @@
 **End-to-end financial risk project — loan default, customer risk segmentation, transaction anomaly detection and insurance claims fraud.**
 Built for Data Analyst / Financial Data Analyst roles in banking and insurance.
 
-**[Live dashboard →](https://sakter2618-maker.github.io/banking-insurance-risk-analytics/)** · [Risk Report](reports/Risk_Report.md) · [SQL queries](sql/02_business_queries.sql) · [Excel workbook](excel/Risk_Analytics_Workbook.xlsx)
+**[Live Streamlit app →](https://banking-insurance-risk-analytics.streamlit.app)** · [Static dashboard](https://sakter2618-maker.github.io/banking-insurance-risk-analytics/) · [Risk Report](reports/Risk_Report.md) · [SQL queries](sql/02_business_queries.sql) · [Excel workbook](excel/Risk_Analytics_Workbook.xlsx)
 
 ![Dashboard overview](docs/screenshots/overview.png)
 
@@ -34,7 +34,7 @@ Full findings and recommendations: **[reports/Risk_Report.md](reports/Risk_Repor
 
 ## Tools
 
-**Python** (pandas, scikit-learn, matplotlib) · **SQL** (PostgreSQL-compatible, tested on SQLite) · **Excel** (live COUNTIFS/AVERAGEIFS formulas, charts, conditional formatting) · **HTML/JavaScript** dashboard with hand-built SVG charts (no libraries, hosted on GitHub Pages)
+**Python** (pandas, scikit-learn, matplotlib) · **SQL** (PostgreSQL-compatible, tested on SQLite) · **Excel** (live COUNTIFS/AVERAGEIFS formulas, charts, conditional formatting) · **Streamlit + Plotly** interactive app (filters, watch-lists, CSV downloads) · plus a no-install **HTML/JavaScript** dashboard with hand-built SVG charts on GitHub Pages
 
 ## Data
 
@@ -63,7 +63,9 @@ banking-insurance-risk-analytics/
 ├── sql/
 │   ├── 01_schema.sql         PostgreSQL tables + load steps
 │   └── 02_business_queries.sql  15 business queries
-├── dashboard/template.html   dashboard source
+├── app.py                    Streamlit app (interactive dashboard)
+├── .streamlit/config.toml    app theme
+├── dashboard/template.html   static dashboard source
 ├── docs/                     live dashboard (GitHub Pages), screenshots, data dictionary
 ├── excel/                    Risk_Analytics_Workbook.xlsx
 ├── outputs/                  summary tables, scored records, SQL results
@@ -75,9 +77,9 @@ banking-insurance-risk-analytics/
 
 ```bash
 pip install -r requirements.txt
-python run_all.py
+python run_all.py          # rebuild data, analysis, SQL results, Excel, static dashboard
+streamlit run app.py       # open the interactive app at http://localhost:8501
 ```
-Then open `docs/index.html` in a browser.
 
 ## Dashboard pages
 
