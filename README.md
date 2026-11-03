@@ -3,9 +3,9 @@
 **End-to-end financial risk project — loan default, customer risk segmentation, transaction anomaly detection and insurance claims fraud.**
 Built for Data Analyst / Financial Data Analyst roles in banking and insurance.
 
-**[Live Streamlit app →](https://banking-insurance-risk-analytics.streamlit.app)** · [Static dashboard](https://sakter2618-maker.github.io/banking-insurance-risk-analytics/) · [Risk Report](reports/Risk_Report.md) · [SQL queries](sql/02_business_queries.sql) · [Excel workbook](excel/Risk_Analytics_Workbook.xlsx)
+**[Live Streamlit app →](https://banking-insurance-risk-analytics-n8ewtoj6bqh8zapprspo88a.streamlit.app/)** · [Static dashboard](https://sakter2618-maker.github.io/banking-insurance-risk-analytics/) · [Risk Report](reports/Risk_Report.md) · [SQL queries](sql/02_business_queries.sql) · [Excel workbook](excel/Risk_Analytics_Workbook.xlsx)
 
-![Dashboard overview](docs/screenshots/overview.png)
+![Streamlit app — overview](docs/screenshots/streamlit/overview.png)
 
 ---
 
@@ -85,9 +85,9 @@ streamlit run app.py       # open the interactive app at http://localhost:8501
 
 | Loan Default | Customer Segments |
 |---|---|
-| ![](docs/screenshots/credit.png) | ![](docs/screenshots/segments.png) |
+| ![](docs/screenshots/streamlit/loan.png) | ![](docs/screenshots/streamlit/customer.png) |
 | **Transactions & Fraud** | **Insurance Claims** |
-| ![](docs/screenshots/tx.png) | ![](docs/screenshots/claims.png) |
+| ![](docs/screenshots/streamlit/transactions.png) | ![](docs/screenshots/streamlit/insurance.png) |
 
 ## Limitations
 
