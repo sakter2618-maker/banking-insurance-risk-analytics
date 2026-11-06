@@ -97,3 +97,7 @@ streamlit run app.py       # open the interactive app at http://localhost:8501
 
 ---
 **Salma Akter** · M.S. Computer & Information Technology · [GitHub](https://github.com/sakter2618-maker)
+
+## Author
+
+**Salma Akter** · Data Analyst & AI Automation · [salmaakter.me](https://salmaakter.me)
