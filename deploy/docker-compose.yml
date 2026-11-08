@@ -1,0 +1,17 @@
+# Runs on the VPS behind the existing Traefik:  https://salmaakter.me/banking
+name: banking-insurance-risk-analytics
+
+services:
+  dashboard:
+    build: ..
+    image: banking-insurance-risk-analytics:latest
+    container_name: banking-dashboard
+    restart: unless-stopped
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.banking.rule=Host(`salmaakter.me`) && PathPrefix(`/banking`)
+      - traefik.http.routers.banking.entrypoints=websecure
+      - traefik.http.routers.banking.tls.certresolver=letsencrypt
+      - traefik.http.routers.banking.priority=100
+      - traefik.http.services.banking.loadbalancer.server.port=8501
+    mem_limit: 1g
